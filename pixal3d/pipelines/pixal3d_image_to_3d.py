@@ -1,4 +1,5 @@
 from typing import *
+import os
 import torch
 import torch.nn as nn
 import numpy as np
@@ -120,7 +121,10 @@ class Pixal3DImageTo3DPipeline(Pipeline):
         pipeline.image_cond_model_shape_1024 = None
         pipeline.image_cond_model_tex_1024 = None
 
-        pipeline.rembg_model = getattr(rembg, args['rembg_model']['name'])(**args['rembg_model']['args'])
+        if os.environ.get("PIXAL3D_SKIP_REMBG", "").lower() in {"1", "true", "yes"}:
+            pipeline.rembg_model = None
+        else:
+            pipeline.rembg_model = getattr(rembg, args['rembg_model']['name'])(**args['rembg_model']['args'])
         
         pipeline.low_vram = args.get('low_vram', True)
         pipeline.default_pipeline_type = args.get('default_pipeline_type', '1024_cascade')
@@ -163,11 +167,15 @@ class Pixal3DImageTo3DPipeline(Pipeline):
             output = input
         else:
             input = input.convert('RGB')
-            if self.low_vram:
+            if self.rembg_model is None:
+                output = input.convert('RGBA')
+                output.putalpha(255)
+            elif self.low_vram:
                 self.rembg_model.to(self.device)
-            output = self.rembg_model(input)
-            if self.low_vram:
+                output = self.rembg_model(input)
                 self.rembg_model.cpu()
+            else:
+                output = self.rembg_model(input)
         output_np = np.array(output)
         alpha = output_np[:, :, 3]
         bbox = np.argwhere(alpha > 0.8 * 255)
@@ -759,6 +767,15 @@ class Pixal3DImageTo3DPipeline(Pipeline):
         torch.cuda.empty_cache()
 
         # ---- Stage 4: Texture (proj) ----
+        if self.low_vram:
+            for image_cond_model in (
+                self.image_cond_model_ss,
+                self.image_cond_model_shape_512,
+                self.image_cond_model_shape_1024,
+            ):
+                image_cond_model.cpu()
+            self.image_cond_model_tex_1024.cuda()
+            torch.cuda.empty_cache()
         tex_grid_res = actual_hr_resolution // 16
         cond_tex = self.get_proj_cond_shape(
             self.image_cond_model_tex_1024, [image], shape_slat.coords,

@@ -1,107 +1,147 @@
-
 <div align="center">
 
-# Pixal3D: Pixel-Aligned 3D Generation from Images
+# Solarpunk Pocket Town with Pixal3D
 
-<h3>SIGGRAPH 2026</h3>
+Image-generated game props converted into GLB assets and arranged in a small interactive Three.js town.
 
-[Dong-Yang Li](https://ldyang694.github.io/)¹ · [Wang Zhao](https://thuzhaowang.github.io/)²* · [Yuxin Chen](https://orcid.org/0000-0002-7854-1072)² · [Wenbo Hu](https://wbhu.github.io/)² · [Meng-Hao Guo](https://menghaoguo.github.io/)¹ · [Fang-Lue Zhang](https://fanglue.github.io/)³ · [Ying Shan](https://www.linkedin.com/in/YingShanProfile)² · [Shi-Min Hu](https://cg.cs.tsinghua.edu.cn/shimin.htm)¹✉
-
-¹Tsinghua University (BNRist) &nbsp;&nbsp; ²Tencent ARC Lab &nbsp;&nbsp; ³Victoria University of Wellington
-
-*Project lead &nbsp;&nbsp; ✉Corresponding author
+[日本語](README.ja.md) · [Original Pixal3D project](https://ldyang694.github.io/projects/pixal3d/) · [Pixal3D models](https://huggingface.co/TencentARC/Pixal3D)
 
 </div>
 
-<div align="center">
-  <a href="https://ldyang694.github.io/projects/pixal3d/"><img src=https://img.shields.io/badge/Project%20Page-333399.svg?logo=googlehome height=22px></a>
-  <a href="https://huggingface.co/spaces/TencentARC/Pixal3D"><img src=https://img.shields.io/badge/%F0%9F%A4%97%20Demo-276cb4.svg height=22px></a>
-  <a href="https://huggingface.co/TencentARC/Pixal3D"><img src=https://img.shields.io/badge/%F0%9F%A4%97%20Models-d96902.svg height=22px></a>
-  <a href="https://arxiv.org/abs/2605.10922"><img src=https://img.shields.io/badge/Arxiv-b5212f.svg?logo=arxiv height=22px></a>
-</div>
+![Solarpunk town preview](outputs/generated_game_assets/preview.png)
 
-<div align="center">
-    <img src="assets/teaser.png" alt="Teaser image of Pixal3D"/>
-</div>
+## ✨ What This Repo Contains
 
-**Pixal3D** generates high-fidelity 3D assets from a single image. Unlike previous methods that loosely inject image features via attention, Pixal3D explicitly lifts pixel features into 3D through back-projection, establishing direct pixel-to-3D correspondences. This enables near-reconstruction-level fidelity with detailed geometry and PBR textures.
+This repository is a public-ready demo project built on top of Tencent ARC's Pixal3D codebase.
 
----
+- A Docker Compose setup for Windows/WSL2/Linux hosts with NVIDIA GPUs.
+- Shared host caches for Hugging Face, Torch, and XDG data so large model files survive container rebuilds.
+- Eight generated GLB game assets arranged in `outputs/generated_game_assets/gallery.html`.
+- A static Three.js viewer served locally on port `8787`.
+- Local compatibility patches used to run Pixal3D in this environment.
 
-## ✨ News
+The upstream Pixal3D research code, citation, and license are preserved. This repo adds a solarpunk town demo and operational Docker packaging around it.
 
-- **May 2026**: Release the improved version based on [Trellis.2](https://github.com/microsoft/TRELLIS.2) backbone. 💪
-- **May 2026**: Release inference code and online demo. 🤗
-- **Apr 2026**: Our paper is accepted to SIGGRAPH 2026! 🎉
+## 🏙️ Demo Assets
 
-## 📌 Branches
+The town currently includes:
 
-| Branch | Description |
-|--------|-------------|
-| `main` | **Latest version** — improved implementation based on [Trellis.2](https://github.com/microsoft/TRELLIS.2) backbone with better performance. |
-| `paper` | **Paper version** — original implementation based on [Direct3D-S2](https://github.com/DreamTechAI/Direct3D-S2), corresponding to results reported in our SIGGRAPH 2026 paper. |
+| Asset | Source | 3D output |
+|---|---|---|
+| Mana crystal / energy core | `assets/generated_game_assets/mana_crystal_alpha.png` | `outputs/generated_game_assets/mana_crystal.glb` |
+| Treasure chest / storage | `assets/generated_game_assets/treasure_chest_alpha.png` | `outputs/generated_game_assets/treasure_chest.glb` |
+| Energy turret / utility node | `assets/generated_game_assets/energy_turret_alpha.png` | `outputs/generated_game_assets/energy_turret.glb` |
+| Mushroom home | `assets/generated_game_assets/mushroom_house_alpha.png` | `outputs/generated_game_assets/mushroom_house.glb` |
+| Solar tree | `outputs/generated_game_assets/solar_tree.png` | `outputs/generated_game_assets/solar_tree.glb` |
+| Greenhouse dome | `outputs/generated_game_assets/greenhouse_dome.png` | `outputs/generated_game_assets/greenhouse_dome.glb` |
+| Wind pod | `outputs/generated_game_assets/wind_pod.png` | `outputs/generated_game_assets/wind_pod.glb` |
+| Market stall | `outputs/generated_game_assets/market_stall.png` | `outputs/generated_game_assets/market_stall.glb` |
 
-> If you want to reproduce the results in our paper, please switch to the `paper` branch.
+Open `outputs/generated_game_assets/gallery.html` through the viewer service to orbit the scene, switch focus targets, and inspect the final layout.
 
-## 🎮 Try It Online
+## 🚀 Quick Start
 
-You can try Pixal3D directly in your browser without any installation via our Hugging Face Gradio demo:
+### 1. Prerequisites
 
-👉 [**Launch Demo**](https://huggingface.co/spaces/TencentARC/Pixal3D)
+- Windows + WSL2 + Docker Desktop, or Linux with Docker Engine.
+- NVIDIA GPU with the NVIDIA Container Toolkit available to Docker.
+- Enough disk space for CUDA/PyTorch/Pixal3D/TRELLIS model caches.
+- Hugging Face access for gated background-removal models when `PIXAL3D_SKIP_REMBG=0`.
 
-## 🚀 Getting Started
+### 2. Build the Pixal3D image
 
-### Installation
-
-#### Step 1: Follow TRELLIS.2 Installation
-
-Please first follow the installation guide of [TRELLIS.2](https://github.com/microsoft/TRELLIS.2) to set up the base environment.
-
-#### Step 2: Install Additional Dependencies
-
-```bash
-pip install -r requirements.txt
+```powershell
+docker compose build pixal3d
 ```
 
-#### Step 3: Install utils3d
+The image is large. It installs CUDA-enabled PyTorch, TRELLIS.2, Pixal3D dependencies, CUDA extensions, `utils3d`, and the NATTEN wheel used by this setup.
 
-```bash
-pip install https://github.com/LDYang694/Storages/releases/download/20260430/utils3d-0.0.2-py3-none-any.whl
+### 3. Serve the finished town viewer
+
+```powershell
+docker compose up viewer
 ```
 
-> **Note**: `requirements-hfdemo.txt` is for the Hugging Face Spaces demo (H-series GPU architecture) and may not be compatible with other architectures.
+Then open:
 
-### Usage
-
-#### Inference
-
-Generate a GLB mesh from a single image:
-
-```bash
-python inference.py --image assets/test_image/0.png --output ./output.glb
+```text
+http://127.0.0.1:8787/gallery.html
 ```
 
-### Web Demo
+### 4. Convert an image into GLB
 
-We provide a Gradio web demo for Pixal3D, which allows you to generate 3D meshes from images interactively.
-
-```bash
-python app.py 
+```powershell
+$env:PIXAL3D_INPUT='outputs/generated_game_assets/solar_tree.png'
+$env:PIXAL3D_OUTPUT='outputs/generated_game_assets/solar_tree.glb'
+$env:PIXAL3D_FOV='0.2'
+docker compose run --rm pixal3d
 ```
 
-## 🤗 Acknowledgements
+For already-isolated RGBA images, you can skip background removal:
 
-This project is heavily built upon [Trellis.2](https://github.com/microsoft/TRELLIS.2) and [Direct3D-S2](https://github.com/DreamTechAI/Direct3D-S2). We sincerely thank the authors for their outstanding work on scalable 3D generation , which serves as the foundation of our codebase and model architecture.
+```powershell
+$env:PIXAL3D_SKIP_REMBG='1'
+docker compose run --rm pixal3d
+Remove-Item Env:PIXAL3D_SKIP_REMBG
+```
 
-We also thank the following repos for their great contributions:
+### 5. Run the Gradio app
 
-- [Direct3D-S2](https://github.com/DreamTechAI/Direct3D-S2)
-- [Trellis](https://github.com/microsoft/TRELLIS)
-- [Trellis.2](https://github.com/microsoft/TRELLIS.2)
+```powershell
+docker compose --profile app up app
+```
 
-## 📄 Citation
+Then open:
 
-If you find this work useful, please consider citing:
+```text
+http://127.0.0.1:7860
+```
+
+## 🧠 Shared Model Cache
+
+The Compose file mounts these host directories into the container:
+
+```text
+.cache/huggingface -> /workspace/.cache/huggingface
+.cache/torch       -> /workspace/.cache/torch
+.cache/xdg         -> /workspace/.cache/xdg
+```
+
+These directories are intentionally ignored by Git. They let you rebuild containers or run sibling containers without downloading large models again.
+
+## 📁 Repository Layout
+
+```text
+assets/generated_game_assets/     Source images for the first generated props
+outputs/generated_game_assets/    GLB assets, panorama image, and Three.js viewer
+docker/Dockerfile                 CUDA/PyTorch/Pixal3D build image
+docker-compose.yml                Inference, Gradio app, and static viewer services
+docker/README.md                  Docker-specific notes
+pixal3d/                          Pixal3D library code
+inference.py                      CLI image-to-GLB entrypoint
+app.py                            Gradio app entrypoint
+```
+
+## ⚠️ Publishing Notes
+
+The current Git remote may still point at the upstream Pixal3D repository. Before pushing publicly, create a new repository and set it as `origin`:
+
+```powershell
+git remote remove origin
+git remote add origin https://github.com/<your-user>/<your-repo>.git
+git push -u origin master
+```
+
+Do not commit `.cache/`; it may contain large model files and local Hugging Face credentials.
+
+## 📄 Attribution
+
+This project is based on:
+
+- [TencentARC/Pixal3D](https://github.com/TencentARC/Pixal3D)
+- [microsoft/TRELLIS.2](https://github.com/microsoft/TRELLIS.2)
+
+If you use the Pixal3D research code, cite the original paper:
 
 ```bibtex
 @article{li2026pixal3d,
@@ -111,4 +151,3 @@ If you find this work useful, please consider citing:
     year={2026}
 }
 ```
-

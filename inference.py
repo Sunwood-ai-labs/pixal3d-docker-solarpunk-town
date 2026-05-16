@@ -9,7 +9,7 @@ from PIL import Image
 
 os.environ['OPENCV_IO_ENABLE_OPENEXR'] = '1'
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-os.environ["ATTN_BACKEND"] = "flash_attn_3"
+os.environ["ATTN_BACKEND"] = os.environ.get("ATTN_BACKEND", "flash_attn")
 os.environ["FLEX_GEMM_AUTOTUNE_CACHE_PATH"] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'autotune_cache.json')
 os.environ["FLEX_GEMM_AUTOTUNER_VERBOSE"] = '1'
 
@@ -80,8 +80,8 @@ def init_pipeline(model_path=MODEL_PATH, device="cuda"):
     pipeline.image_cond_model_shape_1024 = build_image_cond_model(IMAGE_COND_CONFIGS["shape_1024"])
     pipeline.image_cond_model_tex_1024 = build_image_cond_model(IMAGE_COND_CONFIGS["tex_1024"])
 
-    pipeline.low_vram = False
-    pipeline.cuda()
+    pipeline.low_vram = True
+    pipeline.to(device)
 
     pipeline.image_cond_model_ss.cuda()
     pipeline.image_cond_model_shape_512.cuda()

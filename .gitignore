@@ -7,6 +7,14 @@ __pycache__/
 # Output files
 output.glb
 autotune_cache.json
+.cache/
+
+# Local verification screenshots and throwaway previews
+outputs/generated_game_assets/*verified*.png
+outputs/generated_game_assets/field_panorama_prev.png
+outputs/generated_game_assets/*_fixed.glb
+outputs/generated_game_assets/fix_glb_rotation.py
+outputs/generated_game_assets/shelf.html
 
 # Virtual environment
 venv/

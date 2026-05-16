@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solarpunk Pocket Town</title>
+  <link rel="icon" href="data:,">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.164.1/build/three.module.js"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7efd8;
+      --muted: rgba(247, 239, 216, .72);
+      --glass: rgba(11, 16, 14, .56);
+      --line: rgba(247, 239, 216, .18);
+      --amber: #e0b85b;
+      --cyan: #62d6f5;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #080b0a;
+      color: var(--ink);
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    #app {
+      position: fixed;
+      inset: 0;
+    }
+
+    .hud {
+      position: fixed;
+      left: 20px;
+      top: 18px;
+      width: min(420px, calc(100vw - 40px));
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(10, 16, 14, .7), rgba(34, 29, 18, .46));
+      border: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 55px rgba(0,0,0,.32);
+      pointer-events: none;
+    }
+
+    .hud h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 42px);
+      line-height: .92;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .hud p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font: 12px/1.35 "Courier New", monospace;
+    }
+
+    .chips {
+      position: fixed;
+      left: 20px;
+      bottom: 18px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      max-width: min(720px, calc(100vw - 40px));
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: var(--glass);
+      padding: 10px 12px;
+      font: 700 12px/1 "Courier New", monospace;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    button:hover,
+    button.active {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(98, 214, 245, .14), transparent 36%), #080b0a;
+      font: 700 13px/1 "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      transition: opacity .45s ease;
+      pointer-events: none;
+    }
+
+    .loading.hidden {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <section class="hud">
+    <h1>Solarpunk Pocket Town</h1>
+    <p>Drag to orbit. Wheel or pinch to move. Select a town node to frame it.</p>
+  </section>
+  <nav class="chips" aria-label="Asset focus controls">
+    <button data-focus="all" class="active">All</button>
+    <button data-focus="core">Energy Core</button>
+    <button data-focus="garden">Garden</button>
+    <button data-focus="market">Market</button>
+    <button data-focus="utility">Utility</button>
+  </nav>
+  <div class="loading" id="loading">Loading solarpunk town</div>
+
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three@0.164.1/build/three.module.js";
+    import { OrbitControls } from "https://unpkg.com/three@0.164.1/examples/jsm/controls/OrbitControls.js";
+    import { GLTFLoader } from "https://unpkg.com/three@0.164.1/examples/jsm/loaders/GLTFLoader.js";
+
+    const root = document.querySelector("#app");
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.shadowMap.enabled = true;
+    root.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x151b17, 0.018);
+
+    const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.05, 220);
+    camera.position.set(6, 3.2, 8);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.055;
+    controls.minDistance = 3.2;
+    controls.maxDistance = 16;
+    controls.maxPolarAngle = Math.PI * 0.48;
+    controls.target.set(0, 1.0, 0);
+
+    const hemi = new THREE.HemisphereLight(0xf7e9c5, 0x273a31, 1.7);
+    scene.add(hemi);
+
+    const sun = new THREE.DirectionalLight(0xffd890, 3.2);
+    sun.position.set(-5, 8, 4);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.camera.near = 1;
+    sun.shadow.camera.far = 30;
+    sun.shadow.camera.left = -10;
+    sun.shadow.camera.right = 10;
+    sun.shadow.camera.top = 10;
+    sun.shadow.camera.bottom = -10;
+    scene.add(sun);
+
+    const cyan = new THREE.PointLight(0x62d6f5, 2.4, 9);
+    cyan.position.set(-2.8, 2.1, -1.6);
+    scene.add(cyan);
+
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load("./field_panorama.png", (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.mapping = THREE.EquirectangularReflectionMapping;
+      scene.background = tex;
+      scene.environment = tex;
+    });
+
+    const ground = new THREE.Mesh(
+      new THREE.CircleGeometry(8.2, 128),
+      new THREE.MeshStandardMaterial({
+        color: 0x293728,
+        roughness: .92,
+        metalness: 0,
+      })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(4.15, 4.3, 128),
+      new THREE.MeshBasicMaterial({ color: 0xd9b45d, transparent: true, opacity: .42, side: THREE.DoubleSide })
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = .012;
+    scene.add(ring);
+
+    const loader = new GLTFLoader();
+    const assets = [
+      { id: "mana", label: "Energy Core", file: "./mana_crystal.glb", pos: [0, 0, -.55], height: 1.8, yaw: .1, spin: true, radius: .62, pedestal: true },
+      { id: "chest", label: "Storage Chest", file: "./treasure_chest.glb", pos: [3.1, 0, -1.35], height: 1.22, yaw: -.55, spin: false, pedestal: true },
+      { id: "turret", label: "Utility Turret", file: "./energy_turret.glb", pos: [-3.35, 0, .85], height: 1.05, yaw: 2.25, spin: true, pedestal: true },
+      { id: "house", label: "Mushroom Home", file: "./mushroom_house.glb", pos: [.9, 0, 2.85], height: 3.2, yaw: -2.75, spin: false, pedestal: false },
+      { id: "solarTree", label: "Solar Tree", file: "./solar_tree.glb", pos: [-2.65, 0, -3.25], height: 3.25, yaw: .45, spin: false, pedestal: false },
+      { id: "greenhouse", label: "Greenhouse", file: "./greenhouse_dome.glb", pos: [3.65, 0, 1.8], height: 2.65, yaw: -2.25, spin: false, pedestal: false },
+      { id: "windPod", label: "Wind Pod", file: "./wind_pod.glb", pos: [-4.35, 0, -1.25], height: 2.85, yaw: .8, spin: false, pedestal: false },
+      { id: "market", label: "Market Stall", file: "./market_stall.glb", pos: [-.95, 0, 4.25], height: 3.0, yaw: Math.PI, spin: false, pedestal: false },
+    ];
+
+    const loaded = new Map();
+    window.assetFieldDebug = {
+      scene,
+      camera,
+      renderer,
+      loaded,
+      pedestalTopY: .22,
+      groundTopY: 0,
+      getBounds() {
+        return [...loaded.entries()].map(([id, object]) => {
+          const box = new THREE.Box3().setFromObject(object);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          return {
+            id,
+            minY: Number(box.min.y.toFixed(4)),
+            maxY: Number(box.max.y.toFixed(4)),
+            height: Number(size.y.toFixed(4)),
+            groundClearance: Number((box.min.y - 0).toFixed(4)),
+            pedestalClearance: Number((box.min.y - .22).toFixed(4))
+          };
+        });
+      }
+    };
+
+    function normalizeModel(group, targetHeight) {
+      group.updateWorldMatrix(true, true);
+      const box = new THREE.Box3().setFromObject(group);
+      const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
+      box.getSize(size);
+      box.getCenter(center);
+      const scale = targetHeight / Math.max(size.y, 0.001);
+      group.scale.setScalar(scale);
+      group.position.set(-center.x * scale, -box.min.y * scale, -center.z * scale);
+    }
+
+    function makePathStrip(ax, az, bx, bz, width = .2) {
+      const dx = bx - ax;
+      const dz = bz - az;
+      const length = Math.hypot(dx, dz);
+      const path = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, length),
+        new THREE.MeshBasicMaterial({ color: 0xcdb96a, transparent: true, opacity: .42, side: THREE.DoubleSide })
+      );
+      path.rotation.x = -Math.PI / 2;
+      path.rotation.z = -Math.atan2(dx, dz);
+      path.position.set((ax + bx) / 2, .018, (az + bz) / 2);
+      scene.add(path);
+    }
+
+    [
+      [0, -.55, -2.65, -3.25], [0, -.55, 3.1, -1.35], [0, -.55, -3.35, .85],
+      [0, -.55, .9, 2.85], [.9, 2.85, -.95, 4.25], [3.1, -1.35, 3.65, 1.8],
+      [-3.35, .85, -4.35, -1.25]
+    ].forEach(([ax, az, bx, bz]) => makePathStrip(ax, az, bx, bz));
+
+    function makeSolarPanel(x, z, yaw, scale = 1) {
+      const stand = new THREE.Mesh(
+        new THREE.CylinderGeometry(.035 * scale, .045 * scale, .55 * scale, 12),
+        new THREE.MeshStandardMaterial({ color: 0x7b6d52, roughness: .7 })
+      );
+      stand.position.set(x, .28 * scale, z);
+      stand.castShadow = true;
+      scene.add(stand);
+
+      const panel = new THREE.Mesh(
+        new THREE.BoxGeometry(.72 * scale, .045 * scale, .42 * scale),
+        new THREE.MeshStandardMaterial({ color: 0x1c4a55, roughness: .32, metalness: .18, emissive: 0x0b3038, emissiveIntensity: .18 })
+      );
+      panel.position.set(x, .58 * scale, z);
+      panel.rotation.set(-.55, yaw, 0);
+      panel.castShadow = true;
+      scene.add(panel);
+    }
+
+    function makePlanter(x, z, radius = .22) {
+      const pot = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius, radius * 1.15, .18, 18),
+        new THREE.MeshStandardMaterial({ color: 0x6f4b32, roughness: .82 })
+      );
+      pot.position.set(x, .09, z);
+      pot.castShadow = true;
+      pot.receiveShadow = true;
+      scene.add(pot);
+      const plant = new THREE.Mesh(
+        new THREE.SphereGeometry(radius * .82, 12, 8),
+        new THREE.MeshStandardMaterial({ color: 0x6fab5b, roughness: .9 })
+      );
+      plant.scale.y = .55;
+      plant.position.set(x, .24, z);
+      plant.castShadow = true;
+      scene.add(plant);
+    }
+
+    [[-1.15,-2.95,.25,.72],[-.55,-2.8,.05,.58],[3.45,.05,-.35,.66],[3.55,.72,-.1,.56]].forEach(([x,z,y,s]) => makeSolarPanel(x, z, y, s));
+    [[-1.15,1.95],[1.95,2.75],[.88,3.55],[-2.9,1.85],[-.65,-1.35],[2.85,-.25]].forEach(([x,z]) => makePlanter(x, z));
+
+    function makePedestal(x, z, accent, radius = .74) {
+      const base = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius * .86, radius, .22, 48),
+        new THREE.MeshStandardMaterial({ color: 0x22251f, roughness: .78, metalness: .08 })
+      );
+      base.position.set(x, .11, z);
+      base.castShadow = true;
+      base.receiveShadow = true;
+      scene.add(base);
+
+      const glow = new THREE.Mesh(
+        new THREE.RingGeometry(radius * .9, radius * .99, 64),
+        new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: .36, side: THREE.DoubleSide })
+      );
+      glow.rotation.x = -Math.PI / 2;
+      glow.position.set(x, .235, z);
+      scene.add(glow);
+    }
+
+    const accent = {
+      mana: 0x62d6f5,
+      chest: 0xe0b85b,
+      turret: 0x8ed9ff,
+      house: 0xe65d4f,
+      solarTree: 0x90d968,
+      greenhouse: 0x77e0b0,
+      windPod: 0x8ed9ff,
+      market: 0xe0b85b,
+    };
+
+    await Promise.all(assets.map((asset) => new Promise((resolve, reject) => {
+      if (asset.pedestal) {
+        makePedestal(asset.pos[0], asset.pos[2], accent[asset.id], asset.radius || .72);
+      }
+      loader.load(asset.file, (gltf) => {
+        const model = gltf.scene;
+        normalizeModel(model, asset.height);
+        model.traverse((obj) => {
+          if (obj.isMesh) {
+            obj.castShadow = true;
+            obj.receiveShadow = true;
+            if (obj.material) {
+              obj.material.envMapIntensity = .72;
+              obj.material.needsUpdate = true;
+            }
+          }
+        });
+        const holder = new THREE.Group();
+        holder.position.set(asset.pos[0], asset.pedestal ? .22 : 0, asset.pos[2]);
+        holder.rotation.y = asset.yaw;
+        holder.userData.spin = asset.spin;
+        holder.userData.baseY = holder.position.y;
+        holder.add(model);
+        scene.add(holder);
+        loaded.set(asset.id, holder);
+        resolve();
+      }, undefined, reject);
+    })));
+
+    document.querySelector("#loading").classList.add("hidden");
+
+    const focusPoints = {
+      all: { pos: [8.2, 4.6, 9.6], target: [.05, 1.35, .25] },
+      core: { pos: [4.0, 2.7, 4.6], target: [0, 1.05, -.55] },
+      garden: { pos: [6.2, 3.3, 5.8], target: [2.35, 1.45, 2.15] },
+      market: { pos: [1.1, 3.3, 7.1], target: [-.55, 1.45, 3.65] },
+      utility: { pos: [-6.2, 3.1, 3.5], target: [-3.75, 1.4, -.25] },
+    };
+
+    let desiredCamera = null;
+    let desiredTarget = null;
+
+    document.querySelectorAll("button[data-focus]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
+        button.classList.add("active");
+        const data = focusPoints[button.dataset.focus];
+        desiredCamera = new THREE.Vector3(...data.pos);
+        desiredTarget = new THREE.Vector3(...data.target);
+      });
+    });
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      const t = clock.getElapsedTime();
+      loaded.forEach((model, id) => {
+        if (model.userData.spin !== false) {
+          model.position.y = model.userData.baseY + Math.sin(t * 1.4 + id.length) * 0.01;
+          model.rotation.y += id === "turret" ? 0.0025 : 0.0015;
+        }
+      });
+
+      if (desiredCamera && desiredTarget) {
+        camera.position.lerp(desiredCamera, .045);
+        controls.target.lerp(desiredTarget, .055);
+        if (camera.position.distanceTo(desiredCamera) < .03) {
+          desiredCamera = null;
+          desiredTarget = null;
+        }
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

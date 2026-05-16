@@ -1,0 +1,66 @@
+services:
+  pixal3d:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: ${PIXAL3D_IMAGE_NAME:-solarpunk-pixal3d:cu124}
+    gpus: all
+    shm_size: "16gb"
+    environment:
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: "compute,utility,graphics"
+      PYTORCH_CUDA_ALLOC_CONF: "expandable_segments:True"
+      ATTN_BACKEND: ${ATTN_BACKEND:-flash_attn}
+      PIXAL3D_SKIP_REMBG: ${PIXAL3D_SKIP_REMBG:-0}
+      PIXAL3D_INPUT: ${PIXAL3D_INPUT:-assets/generated_game_assets/solar_tree.png}
+      PIXAL3D_OUTPUT: ${PIXAL3D_OUTPUT:-outputs/generated_game_assets/solar_tree.glb}
+      PIXAL3D_FOV: ${PIXAL3D_FOV:-0.2}
+      HF_HOME: "/workspace/.cache/huggingface"
+      HUGGINGFACE_HUB_CACHE: "/workspace/.cache/huggingface/hub"
+      TORCH_HOME: "/workspace/.cache/torch"
+      XDG_CACHE_HOME: "/workspace/.cache/xdg"
+    ports:
+      - "7860:7860"
+    volumes:
+      - .:/workspace/Pixal3D
+      - ./.cache/huggingface:/workspace/.cache/huggingface
+      - ./.cache/torch:/workspace/.cache/torch
+      - ./.cache/xdg:/workspace/.cache/xdg
+    working_dir: /workspace/Pixal3D
+    command: >
+      bash -lc "mkdir -p outputs/generated_game_assets &&
+      python inference.py --image \"$${PIXAL3D_INPUT}\" --output \"$${PIXAL3D_OUTPUT}\" --fov \"$${PIXAL3D_FOV}\""
+
+  app:
+    image: ${PIXAL3D_IMAGE_NAME:-solarpunk-pixal3d:cu124}
+    profiles: ["app"]
+    gpus: all
+    shm_size: "16gb"
+    environment:
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: "compute,utility,graphics"
+      PYTORCH_CUDA_ALLOC_CONF: "expandable_segments:True"
+      ATTN_BACKEND: ${ATTN_BACKEND:-flash_attn}
+      PIXAL3D_SKIP_REMBG: ${PIXAL3D_SKIP_REMBG:-0}
+      HF_HOME: "/workspace/.cache/huggingface"
+      HUGGINGFACE_HUB_CACHE: "/workspace/.cache/huggingface/hub"
+      TORCH_HOME: "/workspace/.cache/torch"
+      XDG_CACHE_HOME: "/workspace/.cache/xdg"
+    ports:
+      - "7860:7860"
+    volumes:
+      - .:/workspace/Pixal3D
+      - ./.cache/huggingface:/workspace/.cache/huggingface
+      - ./.cache/torch:/workspace/.cache/torch
+      - ./.cache/xdg:/workspace/.cache/xdg
+    working_dir: /workspace/Pixal3D
+    command: bash -lc "python app.py"
+
+  viewer:
+    image: python:3.12-alpine
+    working_dir: /site
+    command: python -m http.server 8787 --bind 0.0.0.0
+    ports:
+      - "8787:8787"
+    volumes:
+      - ./outputs/generated_game_assets:/site:ro
