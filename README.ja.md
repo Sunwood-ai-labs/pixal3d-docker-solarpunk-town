@@ -8,7 +8,7 @@
 
 </div>
 
-![Solarpunk town preview](outputs/generated_game_assets/preview.png)
+![Solarpunk town preview](outputs/generated_game_assets/preview_tilt_corrected.png)
 
 ## ✨ このリポジトリについて
 
@@ -17,6 +17,7 @@
 - Windows/WSL2/Linux + NVIDIA GPU 向け Docker Compose 一式
 - Hugging Face / Torch / XDG のホスト共有キャッシュ
 - 生成済み8個のGLBアセット
+- 元GLBを上書きしない姿勢補正版 `*_tilt_corrected.glb`
 - `outputs/generated_game_assets/gallery.html` のThree.js町ビューア
 - このPCで動かすために入れたPixal3D互換パッチ
 
@@ -34,6 +35,8 @@
 | 温室ドーム | `outputs/generated_game_assets/greenhouse_dome.png` | `outputs/generated_game_assets/greenhouse_dome.glb` |
 | 風力ポッド | `outputs/generated_game_assets/wind_pod.png` | `outputs/generated_game_assets/wind_pod.glb` |
 | マーケット屋台 | `outputs/generated_game_assets/market_stall.png` | `outputs/generated_game_assets/market_stall.glb` |
+
+ビューアでは `*_tilt_corrected.glb` を参照しています。元のGLBは比較・戻し用にそのまま残しています。
 
 ## 🚀 起動方法
 

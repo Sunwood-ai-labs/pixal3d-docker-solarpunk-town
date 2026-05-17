@@ -8,7 +8,7 @@ Image-generated game props converted into GLB assets and arranged in a small int
 
 </div>
 
-![Solarpunk town preview](outputs/generated_game_assets/preview.png)
+![Solarpunk town preview](outputs/generated_game_assets/preview_tilt_corrected.png)
 
 ## ✨ What This Repo Contains
 
@@ -17,6 +17,7 @@ This repository is a public-ready demo project built on top of Tencent ARC's Pix
 - A Docker Compose setup for Windows/WSL2/Linux hosts with NVIDIA GPUs.
 - Shared host caches for Hugging Face, Torch, and XDG data so large model files survive container rebuilds.
 - Eight generated GLB game assets arranged in `outputs/generated_game_assets/gallery.html`.
+- Non-destructive tilt-corrected GLB variants used by the viewer.
 - A static Three.js viewer served locally on port `8787`.
 - Local compatibility patches used to run Pixal3D in this environment.
 
@@ -36,6 +37,8 @@ The town currently includes:
 | Greenhouse dome | `outputs/generated_game_assets/greenhouse_dome.png` | `outputs/generated_game_assets/greenhouse_dome.glb` |
 | Wind pod | `outputs/generated_game_assets/wind_pod.png` | `outputs/generated_game_assets/wind_pod.glb` |
 | Market stall | `outputs/generated_game_assets/market_stall.png` | `outputs/generated_game_assets/market_stall.glb` |
+
+The viewer uses `*_tilt_corrected.glb` variants. The original GLB files are kept next to them for comparison and rollback.
 
 Open `outputs/generated_game_assets/gallery.html` through the viewer service to orbit the scene, switch focus targets, and inspect the final layout.
 

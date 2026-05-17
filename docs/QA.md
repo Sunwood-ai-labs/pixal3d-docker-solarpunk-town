@@ -13,6 +13,7 @@
 - Static viewer URL: `http://127.0.0.1:8787/gallery.html`
 - Last browser verification: 8 assets loaded, no console errors.
 - Grounding check after facility scaling: house, market, solar tree, wind pod, and greenhouse report `groundClearance: 0`.
+- Tilt-corrected viewer check: all 8 `*_tilt_corrected.glb` files loaded with HTTP 200 and no console errors.
 
 ## Publishing Guardrails
 
