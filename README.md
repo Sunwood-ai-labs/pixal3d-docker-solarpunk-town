@@ -1,6 +1,6 @@
 <div align="center">
 
-# Solarpunk Pocket Town with Pixal3D
+# Dockerized Pixal3D Solarpunk Pocket Town
 
 Image-generated game props converted into GLB assets and arranged in a small interactive Three.js town.
 

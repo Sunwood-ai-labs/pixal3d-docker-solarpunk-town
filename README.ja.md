@@ -1,6 +1,6 @@
 <div align="center">
 
-# Solarpunk Pocket Town with Pixal3D
+# Dockerized Pixal3D Solarpunk Pocket Town
 
 画像生成したゲーム用アセットをPixal3DでGLB化し、Three.jsで小さなソーラーパンク町として配置したデモです。
 
