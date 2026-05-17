@@ -9,10 +9,10 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $repoRoot
 
 $assets = @(
-  @{ Input = "outputs/generated_game_assets/solar_tree.png"; Output = "outputs/generated_game_assets/solar_tree.glb" },
-  @{ Input = "outputs/generated_game_assets/greenhouse_dome.png"; Output = "outputs/generated_game_assets/greenhouse_dome.glb" },
-  @{ Input = "outputs/generated_game_assets/wind_pod.png"; Output = "outputs/generated_game_assets/wind_pod.glb" },
-  @{ Input = "outputs/generated_game_assets/market_stall.png"; Output = "outputs/generated_game_assets/market_stall.glb" }
+  @{ Input = "outputs/generated_game_assets/images/sources/solar_tree.png"; Output = "outputs/generated_game_assets/models/original/solar_tree.glb" },
+  @{ Input = "outputs/generated_game_assets/images/sources/greenhouse_dome.png"; Output = "outputs/generated_game_assets/models/original/greenhouse_dome.glb" },
+  @{ Input = "outputs/generated_game_assets/images/sources/wind_pod.png"; Output = "outputs/generated_game_assets/models/original/wind_pod.glb" },
+  @{ Input = "outputs/generated_game_assets/images/sources/market_stall.png"; Output = "outputs/generated_game_assets/models/original/market_stall.glb" }
 )
 
 foreach ($asset in $assets) {

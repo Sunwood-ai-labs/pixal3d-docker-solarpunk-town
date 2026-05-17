@@ -12,8 +12,8 @@ services:
       PYTORCH_CUDA_ALLOC_CONF: "expandable_segments:True"
       ATTN_BACKEND: ${ATTN_BACKEND:-flash_attn}
       PIXAL3D_SKIP_REMBG: ${PIXAL3D_SKIP_REMBG:-0}
-      PIXAL3D_INPUT: ${PIXAL3D_INPUT:-assets/generated_game_assets/solar_tree.png}
-      PIXAL3D_OUTPUT: ${PIXAL3D_OUTPUT:-outputs/generated_game_assets/solar_tree.glb}
+      PIXAL3D_INPUT: ${PIXAL3D_INPUT:-outputs/generated_game_assets/images/sources/solar_tree.png}
+      PIXAL3D_OUTPUT: ${PIXAL3D_OUTPUT:-outputs/generated_game_assets/models/original/solar_tree.glb}
       PIXAL3D_FOV: ${PIXAL3D_FOV:-0.2}
       HF_HOME: "/workspace/.cache/huggingface"
       HUGGINGFACE_HUB_CACHE: "/workspace/.cache/huggingface/hub"

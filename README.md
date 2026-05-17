@@ -8,7 +8,7 @@ Image-generated game props converted into GLB assets and arranged in a small int
 
 </div>
 
-![Solarpunk town preview](outputs/generated_game_assets/preview_tilt_corrected.png)
+![Solarpunk town preview](outputs/generated_game_assets/images/previews/preview_tilt_corrected.png)
 
 ## ✨ What This Repo Contains
 
@@ -29,14 +29,14 @@ The town currently includes:
 
 | Asset | Source | 3D output |
 |---|---|---|
-| Mana crystal / energy core | `assets/generated_game_assets/mana_crystal_alpha.png` | `outputs/generated_game_assets/mana_crystal.glb` |
-| Treasure chest / storage | `assets/generated_game_assets/treasure_chest_alpha.png` | `outputs/generated_game_assets/treasure_chest.glb` |
-| Energy turret / utility node | `assets/generated_game_assets/energy_turret_alpha.png` | `outputs/generated_game_assets/energy_turret.glb` |
-| Mushroom home | `assets/generated_game_assets/mushroom_house_alpha.png` | `outputs/generated_game_assets/mushroom_house.glb` |
-| Solar tree | `outputs/generated_game_assets/solar_tree.png` | `outputs/generated_game_assets/solar_tree.glb` |
-| Greenhouse dome | `outputs/generated_game_assets/greenhouse_dome.png` | `outputs/generated_game_assets/greenhouse_dome.glb` |
-| Wind pod | `outputs/generated_game_assets/wind_pod.png` | `outputs/generated_game_assets/wind_pod.glb` |
-| Market stall | `outputs/generated_game_assets/market_stall.png` | `outputs/generated_game_assets/market_stall.glb` |
+| Mana crystal / energy core | `assets/generated_game_assets/mana_crystal_alpha.png` | `outputs/generated_game_assets/models/original/mana_crystal.glb` |
+| Treasure chest / storage | `assets/generated_game_assets/treasure_chest_alpha.png` | `outputs/generated_game_assets/models/original/treasure_chest.glb` |
+| Energy turret / utility node | `assets/generated_game_assets/energy_turret_alpha.png` | `outputs/generated_game_assets/models/original/energy_turret.glb` |
+| Mushroom home | `assets/generated_game_assets/mushroom_house_alpha.png` | `outputs/generated_game_assets/models/original/mushroom_house.glb` |
+| Solar tree | `outputs/generated_game_assets/images/sources/solar_tree.png` | `outputs/generated_game_assets/models/original/solar_tree.glb` |
+| Greenhouse dome | `outputs/generated_game_assets/images/sources/greenhouse_dome.png` | `outputs/generated_game_assets/models/original/greenhouse_dome.glb` |
+| Wind pod | `outputs/generated_game_assets/images/sources/wind_pod.png` | `outputs/generated_game_assets/models/original/wind_pod.glb` |
+| Market stall | `outputs/generated_game_assets/images/sources/market_stall.png` | `outputs/generated_game_assets/models/original/market_stall.glb` |
 
 The viewer uses `*_tilt_corrected.glb` variants. The original GLB files are kept next to them for comparison and rollback.
 
@@ -74,8 +74,8 @@ http://127.0.0.1:8787/gallery.html
 ### 4. Convert an image into GLB
 
 ```powershell
-$env:PIXAL3D_INPUT='outputs/generated_game_assets/solar_tree.png'
-$env:PIXAL3D_OUTPUT='outputs/generated_game_assets/solar_tree.glb'
+$env:PIXAL3D_INPUT='outputs/generated_game_assets/images/sources/solar_tree.png'
+$env:PIXAL3D_OUTPUT='outputs/generated_game_assets/models/original/solar_tree.glb'
 $env:PIXAL3D_FOV='0.2'
 docker compose run --rm pixal3d
 ```
@@ -116,7 +116,7 @@ These directories are intentionally ignored by Git. They let you rebuild contain
 
 ```text
 assets/generated_game_assets/     Source images for the first generated props
-outputs/generated_game_assets/    GLB assets, panorama image, and Three.js viewer
+outputs/generated_game_assets/    Organized viewer, model, image, and report assets
 docker/Dockerfile                 CUDA/PyTorch/Pixal3D build image
 docker-compose.yml                Inference, Gradio app, and static viewer services
 docker/README.md                  Docker-specific notes

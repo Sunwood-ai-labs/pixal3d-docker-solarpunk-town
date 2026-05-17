@@ -19,4 +19,5 @@
 
 - `.cache/` is ignored and must not be committed.
 - Verification screenshots named `*verified*.png` are ignored.
+- Local scratch files under `outputs/generated_game_assets/workfiles/` are ignored.
 - The current upstream Pixal3D remote should be replaced with a new project remote before pushing.

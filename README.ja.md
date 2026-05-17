@@ -8,7 +8,7 @@
 
 </div>
 
-![Solarpunk town preview](outputs/generated_game_assets/preview_tilt_corrected.png)
+![Solarpunk town preview](outputs/generated_game_assets/images/previews/preview_tilt_corrected.png)
 
 ## ✨ このリポジトリについて
 
@@ -27,14 +27,14 @@
 
 | アセット | 入力画像 | 3D出力 |
 |---|---|---|
-| マナクリスタル / エネルギー核 | `assets/generated_game_assets/mana_crystal_alpha.png` | `outputs/generated_game_assets/mana_crystal.glb` |
-| 宝箱 / 保管庫 | `assets/generated_game_assets/treasure_chest_alpha.png` | `outputs/generated_game_assets/treasure_chest.glb` |
-| エネルギータレット / ユーティリティ設備 | `assets/generated_game_assets/energy_turret_alpha.png` | `outputs/generated_game_assets/energy_turret.glb` |
-| キノコ家 | `assets/generated_game_assets/mushroom_house_alpha.png` | `outputs/generated_game_assets/mushroom_house.glb` |
-| ソーラーツリー | `outputs/generated_game_assets/solar_tree.png` | `outputs/generated_game_assets/solar_tree.glb` |
-| 温室ドーム | `outputs/generated_game_assets/greenhouse_dome.png` | `outputs/generated_game_assets/greenhouse_dome.glb` |
-| 風力ポッド | `outputs/generated_game_assets/wind_pod.png` | `outputs/generated_game_assets/wind_pod.glb` |
-| マーケット屋台 | `outputs/generated_game_assets/market_stall.png` | `outputs/generated_game_assets/market_stall.glb` |
+| マナクリスタル / エネルギー核 | `assets/generated_game_assets/mana_crystal_alpha.png` | `outputs/generated_game_assets/models/original/mana_crystal.glb` |
+| 宝箱 / 保管庫 | `assets/generated_game_assets/treasure_chest_alpha.png` | `outputs/generated_game_assets/models/original/treasure_chest.glb` |
+| エネルギータレット / ユーティリティ設備 | `assets/generated_game_assets/energy_turret_alpha.png` | `outputs/generated_game_assets/models/original/energy_turret.glb` |
+| キノコ家 | `assets/generated_game_assets/mushroom_house_alpha.png` | `outputs/generated_game_assets/models/original/mushroom_house.glb` |
+| ソーラーツリー | `outputs/generated_game_assets/images/sources/solar_tree.png` | `outputs/generated_game_assets/models/original/solar_tree.glb` |
+| 温室ドーム | `outputs/generated_game_assets/images/sources/greenhouse_dome.png` | `outputs/generated_game_assets/models/original/greenhouse_dome.glb` |
+| 風力ポッド | `outputs/generated_game_assets/images/sources/wind_pod.png` | `outputs/generated_game_assets/models/original/wind_pod.glb` |
+| マーケット屋台 | `outputs/generated_game_assets/images/sources/market_stall.png` | `outputs/generated_game_assets/models/original/market_stall.glb` |
 
 ビューアでは `*_tilt_corrected.glb` を参照しています。元のGLBは比較・戻し用にそのまま残しています。
 
@@ -68,8 +68,8 @@ http://127.0.0.1:8787/gallery.html
 ### 4. 画像をGLB化
 
 ```powershell
-$env:PIXAL3D_INPUT='outputs/generated_game_assets/solar_tree.png'
-$env:PIXAL3D_OUTPUT='outputs/generated_game_assets/solar_tree.glb'
+$env:PIXAL3D_INPUT='outputs/generated_game_assets/images/sources/solar_tree.png'
+$env:PIXAL3D_OUTPUT='outputs/generated_game_assets/models/original/solar_tree.glb'
 $env:PIXAL3D_FOV='0.2'
 docker compose run --rm pixal3d
 ```

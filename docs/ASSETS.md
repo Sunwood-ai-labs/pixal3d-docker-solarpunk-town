@@ -2,26 +2,44 @@
 
 This demo keeps the finished scene under `outputs/generated_game_assets/`.
 
+## Directory Layout
+
+```text
+outputs/generated_game_assets/
+  gallery.html
+  field.html
+  models/
+    original/
+    tilt_corrected/
+  images/
+    panorama/
+    previews/
+    sources/
+  reports/
+  workfiles/        local-only scratch files, ignored by Git
+```
+
 ## Viewer
 
 - `gallery.html` - main Three.js viewer
 - `field.html` - synchronized copy of the main viewer
-- `field_panorama.png` - solarpunk panorama background
-- `preview.png` - README preview image
-- `preview_tilt_corrected.png` - README preview after non-destructive pose correction
+- `images/panorama/field_panorama.png` - solarpunk panorama background
+- `images/panorama/solarpunk_panorama_source.png` - generated panorama source
+- `images/previews/preview.png` - early README preview image
+- `images/previews/preview_tilt_corrected.png` - README preview after non-destructive pose correction
 
-## GLB Assets
+## Original GLB Assets
 
 | File | Role |
 |---|---|
-| `mana_crystal.glb` | Central energy core |
-| `treasure_chest.glb` | Storage chest |
-| `energy_turret.glb` | Utility turret |
-| `mushroom_house.glb` | Main house |
-| `solar_tree.glb` | Solar charging tree |
-| `greenhouse_dome.glb` | Garden greenhouse |
-| `wind_pod.glb` | Wind power pod |
-| `market_stall.glb` | Community market |
+| `models/original/mana_crystal.glb` | Central energy core |
+| `models/original/treasure_chest.glb` | Storage chest |
+| `models/original/energy_turret.glb` | Utility turret |
+| `models/original/mushroom_house.glb` | Main house |
+| `models/original/solar_tree.glb` | Solar charging tree |
+| `models/original/greenhouse_dome.glb` | Garden greenhouse |
+| `models/original/wind_pod.glb` | Wind power pod |
+| `models/original/market_stall.glb` | Community market |
 
 ## Tilt-Corrected GLB Assets
 
@@ -29,20 +47,19 @@ The viewer references these non-destructive corrected variants:
 
 | File | Source |
 |---|---|
-| `mana_crystal_tilt_corrected.glb` | `mana_crystal.glb` |
-| `treasure_chest_tilt_corrected.glb` | `treasure_chest.glb` |
-| `energy_turret_tilt_corrected.glb` | `energy_turret.glb` |
-| `mushroom_house_tilt_corrected.glb` | `mushroom_house.glb` |
-| `solar_tree_tilt_corrected.glb` | `solar_tree.glb` |
-| `greenhouse_dome_tilt_corrected.glb` | `greenhouse_dome.glb` |
-| `wind_pod_tilt_corrected.glb` | `wind_pod.glb` |
-| `market_stall_tilt_corrected.glb` | `market_stall.glb` |
+| `models/tilt_corrected/mana_crystal_tilt_corrected.glb` | `models/original/mana_crystal.glb` |
+| `models/tilt_corrected/treasure_chest_tilt_corrected.glb` | `models/original/treasure_chest.glb` |
+| `models/tilt_corrected/energy_turret_tilt_corrected.glb` | `models/original/energy_turret.glb` |
+| `models/tilt_corrected/mushroom_house_tilt_corrected.glb` | `models/original/mushroom_house.glb` |
+| `models/tilt_corrected/solar_tree_tilt_corrected.glb` | `models/original/solar_tree.glb` |
+| `models/tilt_corrected/greenhouse_dome_tilt_corrected.glb` | `models/original/greenhouse_dome.glb` |
+| `models/tilt_corrected/wind_pod_tilt_corrected.glb` | `models/original/wind_pod.glb` |
+| `models/tilt_corrected/market_stall_tilt_corrected.glb` | `models/original/market_stall.glb` |
 
-`tilt_correction_report.json` records the correction angle, bounds, and support-plane diagnostics for each model.
+`reports/tilt_correction_report.json` records the correction angle, bounds, and support-plane diagnostics for each model.
 
 ## Source Images
 
-The first four source images are in `assets/generated_game_assets/`.
-The later solarpunk source PNGs are in `outputs/generated_game_assets/`.
-
-Verification screenshots named `*verified*.png` are local QA artifacts and are ignored by Git.
+- The first four source images are in `assets/generated_game_assets/`.
+- Later solarpunk source PNGs are in `outputs/generated_game_assets/images/sources/`.
+- Verification screenshots named `*verified*.png` are local QA artifacts and are ignored by Git.

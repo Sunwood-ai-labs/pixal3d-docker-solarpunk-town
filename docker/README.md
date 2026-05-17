@@ -29,8 +29,8 @@ The image builds from `nvidia/cuda:12.4.1-devel-ubuntu22.04`, clones `microsoft/
 ## Run Inference
 
 ```powershell
-$env:PIXAL3D_INPUT='outputs/generated_game_assets/solar_tree.png'
-$env:PIXAL3D_OUTPUT='outputs/generated_game_assets/solar_tree.glb'
+$env:PIXAL3D_INPUT='outputs/generated_game_assets/images/sources/solar_tree.png'
+$env:PIXAL3D_OUTPUT='outputs/generated_game_assets/models/original/solar_tree.glb'
 $env:PIXAL3D_FOV='0.2'
 docker compose run --rm pixal3d
 ```

@@ -11,10 +11,12 @@ autotune_cache.json
 
 # Local verification screenshots and throwaway previews
 outputs/generated_game_assets/*verified*.png
+outputs/generated_game_assets/images/previews/*verified*.png
 outputs/generated_game_assets/field_panorama_prev.png
 outputs/generated_game_assets/*_fixed.glb
 outputs/generated_game_assets/fix_glb_rotation.py
 outputs/generated_game_assets/shelf.html
+outputs/generated_game_assets/workfiles/
 
 # Virtual environment
 venv/
